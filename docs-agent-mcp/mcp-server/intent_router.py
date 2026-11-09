@@ -6,15 +6,15 @@ Rerank helpers run only after Milvus returns hits.
 
 from __future__ import annotations
 
-import os
 import re
 from dataclasses import dataclass, replace
 
+from config import env_int
 from rag_collections import SPARSE_FIELD
 
 # ConfigMap still uses these env names. candidate_depth = fetch this many, then rerank to top_k.
-LATEST_RELEASE_FETCH_LIMIT = int(os.getenv("AUTO_TEMPORAL_CANDIDATE_DEPTH", "50"))
-KEYWORD_FETCH_LIMIT = int(os.getenv("AUTO_BM25_CANDIDATE_DEPTH", "30"))
+LATEST_RELEASE_FETCH_LIMIT = env_int("AUTO_TEMPORAL_CANDIDATE_DEPTH", 50, minimum=1)
+KEYWORD_FETCH_LIMIT = env_int("AUTO_BM25_CANDIDATE_DEPTH", 30, minimum=1)
 
 COMPARE_WORDS = re.compile(r"\b(compare|versus|vs\.?|difference between)\b", re.I)
 RELEASE_DATE_WORDS = re.compile(r"\b(when was|release date|ga date|released)\b", re.I)

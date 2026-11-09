@@ -1,6 +1,5 @@
 """MCP tools: search docs, issues, and code."""
 
-import os
 import re
 
 from fastmcp import FastMCP
@@ -13,15 +12,16 @@ from citations import (
     search_tool_result,
     text_tool_result,
 )
+from config import env_int
 from intent_router import RetrievalPlan, retrieval_metadata
 import flo_tracing
 import milvus_search
 from milvus_search import search_collection, search_docs_auto
 
-PORT = int(os.getenv("PORT", "8000"))
-MAX_QUERY_CHARS = int(os.getenv("MAX_QUERY_CHARS", "512"))
-MAX_TOP_K = int(os.getenv("MAX_TOP_K", "20"))
-DOCS_CONTEXT_MAX_CHARS = int(os.getenv("DOCS_CONTEXT_MAX_CHARS", "4000"))
+PORT = env_int("PORT", 8000, minimum=1, maximum=65535)
+MAX_QUERY_CHARS = env_int("MAX_QUERY_CHARS", 512, minimum=1)
+MAX_TOP_K = env_int("MAX_TOP_K", 20, minimum=1)
+DOCS_CONTEXT_MAX_CHARS = env_int("DOCS_CONTEXT_MAX_CHARS", 4000, minimum=1)
 
 SAFE_FILTER = re.compile(r"^[A-Za-z0-9_/.\-]+$")
 

@@ -8,6 +8,7 @@ import threading
 from pymilvus import AnnSearchRequest, MilvusClient, RRFRanker, WeightedRanker
 
 import flo_tracing
+from config import env_float, env_int
 from embeddings_client import embed_query
 from intent_router import (
     downgrade_plan_for_collection,
@@ -39,9 +40,9 @@ ISSUES_COLLECTION_NAME = os.getenv("ISSUES_COLLECTION_NAME", ISSUES_COLLECTION)
 CODE_COLLECTION_NAME = os.getenv("CODE_COLLECTION_NAME", CODE_COLLECTION)
 
 HYBRID_RANKER = os.getenv("HYBRID_RANKER", "rrf").strip().lower()
-HYBRID_DENSE_WEIGHT = float(os.getenv("HYBRID_DENSE_WEIGHT", "0.7"))
-HYBRID_SPARSE_WEIGHT = float(os.getenv("HYBRID_SPARSE_WEIGHT", "0.3"))
-HYBRID_RRF_K = int(os.getenv("HYBRID_RRF_K", "60"))
+HYBRID_DENSE_WEIGHT = env_float("HYBRID_DENSE_WEIGHT", 0.7, minimum=0.0, maximum=1.0)
+HYBRID_SPARSE_WEIGHT = env_float("HYBRID_SPARSE_WEIGHT", 0.3, minimum=0.0, maximum=1.0)
+HYBRID_RRF_K = env_int("HYBRID_RRF_K", 60, minimum=1, maximum=16383)
 
 client: MilvusClient | None = None
 _connect_lock = threading.Lock()
